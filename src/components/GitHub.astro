@@ -1,0 +1,120 @@
+---
+---
+
+<div id="github">
+  <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-6 flex items-center gap-2">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    GitHub
+  </h3>
+  <div id="github-feed" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+    <div class="text-sm text-muted animate-pulse">Loading activity...</div>
+  </div>
+  <div class="mt-10">
+    <h4 class="text-sm font-bold uppercase tracking-widest text-cream mb-4 flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      Contributions
+    </h4>
+    <a href="https://github.com/nathanchase" target="_blank" rel="noopener" class="block overflow-x-auto">
+      <img src="https://ghchart.rshah.org/d4a054/nathanchase" alt="Nathan Chase's GitHub contribution graph" width="722" height="112" class="w-full" />
+    </a>
+  </div>
+</div>
+
+<script>
+  const GITHUB_USER = "nathanchase";
+
+  function timeAgo(dateStr: string): string {
+    const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+    if (seconds < 60) return "just now";
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    const days = Math.floor(seconds / 86400);
+    if (days < 30) return `${days}d ago`;
+    return `${Math.floor(days / 30)}mo ago`;
+  }
+
+  function escapeHtml(str: string): string {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  const chevron = `<svg class="w-3 h-3 text-muted/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>`;
+
+  function githubCard(event: { type: string; repo: { name: string; url: string }; created_at: string; payload?: any }): string {
+    let action = "";
+    const repo = event.repo.name;
+    const repoUrl = `https://github.com/${repo}`;
+
+    switch (event.type) {
+      case "PushEvent":
+        const count = event.payload?.commits?.length ?? 0;
+        action = `Pushed ${count} commit${count !== 1 ? "s" : ""} to`;
+        break;
+      case "CreateEvent":
+        action = `Created ${event.payload?.ref_type ?? "repository"}${event.payload?.ref ? " " + event.payload.ref + " in" : ""}`;
+        break;
+      case "WatchEvent":
+        action = "Starred";
+        break;
+      case "ForkEvent":
+        action = "Forked";
+        break;
+      case "IssuesEvent":
+        action = `${event.payload?.action === "opened" ? "Opened" : "Updated"} issue in`;
+        break;
+      case "PullRequestEvent":
+        action = `${event.payload?.action === "opened" ? "Opened" : "Updated"} PR in`;
+        break;
+      case "IssueCommentEvent":
+        action = "Commented in";
+        break;
+      case "ReleaseEvent":
+        action = "Published release in";
+        break;
+      case "DeleteEvent":
+        action = `Deleted ${event.payload?.ref_type ?? "ref"} in`;
+        break;
+      default:
+        action = `Activity in`;
+    }
+
+    return `<a href="${repoUrl}" target="_blank" rel="noopener" class="flex flex-col justify-between min-h-[120px] border border-muted/20 rounded-lg p-4 hover:border-amber/30 hover:bg-warm-bg-light/30 transition-colors">
+      <p class="text-sm text-cream-dark leading-relaxed">${action} <span class="text-amber">${escapeHtml(repo)}</span></p>
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-xs text-muted">${timeAgo(event.created_at)}</span>
+        ${chevron}
+      </div>
+    </a>`;
+  }
+
+  async function loadGitHub() {
+    const container = document.getElementById("github-feed")!;
+    try {
+      const res = await fetch(
+        `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=30`
+      );
+      if (!res.ok) throw new Error("Failed to fetch");
+      const events = await res.json();
+      if (events.length === 0) {
+        container.innerHTML = `<p class="text-sm text-muted">No recent activity.</p>`;
+        return;
+      }
+      const seen = new Set<string>();
+      const unique: any[] = [];
+      for (const event of events) {
+        if (!seen.has(event.repo.name)) {
+          seen.add(event.repo.name);
+          unique.push(event);
+        }
+        if (unique.length >= 6) break;
+      }
+      container.innerHTML = unique.map(githubCard).join("");
+    } catch {
+      container.innerHTML = `<p class="text-sm text-muted">Could not load GitHub activity.</p>`;
+    }
+  }
+
+  const el = document.getElementById("github")!;
+  new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); loadGitHub(); } }, { rootMargin: "200px" }).observe(el);
+</script>

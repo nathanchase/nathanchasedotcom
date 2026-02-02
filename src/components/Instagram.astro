@@ -1,0 +1,53 @@
+<section id="instagram" class="max-w-5xl mx-auto px-6 py-24">
+  <h2 class="font-serif text-3xl text-amber glow mb-2 text-center">Instagram</h2>
+  <p class="text-center text-sm text-muted mb-8">
+    <a href="https://www.instagram.com/nathanchase" target="_blank" rel="noopener" class="hover:text-amber transition-colors">@nathanchase</a>
+  </p>
+  <div id="instagram-grid" class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+    {Array.from({ length: 6 }).map(() => (
+      <div class="aspect-square rounded bg-warm-bg-light animate-pulse"></div>
+    ))}
+  </div>
+  <p id="instagram-error" class="text-center text-sm text-muted mt-4 hidden">Could not load Instagram photos.</p>
+</section>
+
+<script>
+  async function loadInstagram() {
+    const grid = document.getElementById("instagram-grid")!;
+    const error = document.getElementById("instagram-error")!;
+
+    try {
+      const res = await fetch("/api/instagram.json");
+      if (!res.ok) throw new Error("Failed");
+
+      const data = await res.json();
+      const images = data.images ?? [];
+
+      if (images.length === 0) {
+        grid.innerHTML = "";
+        error.classList.remove("hidden");
+        return;
+      }
+
+      grid.innerHTML = images
+        .slice(0, 6)
+        .map(
+          (img: { src: string; alt: string; url: string }) =>
+            `<a href="${img.url}" target="_blank" rel="noopener" class="aspect-square overflow-hidden rounded">
+              <img
+                src="${img.src}"
+                alt="${img.alt}"
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            </a>`
+        )
+        .join("");
+    } catch {
+      grid.innerHTML = "";
+      error.classList.remove("hidden");
+    }
+  }
+
+  loadInstagram();
+</script>

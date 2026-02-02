@@ -1,0 +1,47 @@
+---
+---
+
+<div id="listening">
+  <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-6">Listening</h3>
+  <div id="lastfm-tracks" class="grid grid-cols-4 sm:grid-cols-8 gap-3">
+    <p class="text-cream-dark col-span-full text-sm">Loading recently played…</p>
+  </div>
+</div>
+
+<script>
+  async function loadLastfm() {
+    const container = document.getElementById("lastfm-tracks");
+    if (!container) return;
+
+    try {
+      const res = await fetch("/api/lastfm.json");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const { tracks } = await res.json();
+
+      if (!tracks || tracks.length === 0) {
+        container.innerHTML = `<p class="text-cream-dark col-span-full text-sm">No recent tracks found.</p>`;
+        return;
+      }
+
+      container.innerHTML = tracks
+        .map(
+          (t: { track: string; artist: string; album?: string; image: string | null; url: string; nowPlaying: boolean }) => `
+        <a href="${t.url}" target="_blank" rel="noopener"
+           class="group block overflow-hidden rounded border border-muted/20 bg-warm-bg-light/30 hover:border-amber/40 transition-colors">
+          ${t.image ? `<img src="${t.image}" alt="${t.artist} — ${t.track}" width="300" height="300" loading="lazy" class="w-full h-auto" />` : `<div class="w-full aspect-square bg-warm-bg-light flex items-center justify-center text-muted text-xs">No Art</div>`}
+          <div class="p-2">
+            <p class="text-xs text-cream truncate">${t.track}</p>
+            <p class="text-[10px] text-muted truncate">${t.artist}${t.nowPlaying ? ' — <span class="text-amber">Now Playing</span>' : ""}</p>
+          </div>
+        </a>
+      `
+        )
+        .join("");
+    } catch {
+      container.innerHTML = `<p class="text-cream-dark col-span-full text-sm">Could not load listening history.</p>`;
+    }
+  }
+
+  const el = document.getElementById("listening")!;
+  new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); loadLastfm(); } }, { rootMargin: "200px" }).observe(el);
+</script>

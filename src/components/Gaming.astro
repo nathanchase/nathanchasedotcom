@@ -1,0 +1,44 @@
+---
+---
+
+<div id="gaming">
+  <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-6">Playing</h3>
+  <div id="steam-games" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <p class="text-cream-dark col-span-full text-sm">Loading recently played games…</p>
+  </div>
+</div>
+
+<script>
+  async function loadSteamGames() {
+    const container = document.getElementById("steam-games");
+    if (!container) return;
+
+    try {
+      const res = await fetch("/api/steam.json");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const { games } = await res.json();
+
+      if (!games || games.length === 0) {
+        container.innerHTML = `<p class="text-cream-dark col-span-full text-sm">No recent games found.</p>`;
+        return;
+      }
+
+      container.innerHTML = games
+        .map(
+          (g: { appid: number; name: string; playtime_hours: number; header_url: string; last_played: number }) => `
+        <a href="https://store.steampowered.com/app/${g.appid}" target="_blank" rel="noopener"
+           class="group block overflow-hidden rounded border border-muted/20 bg-warm-bg-light/30 hover:border-amber/40 transition-colors">
+          <img src="${g.header_url}" alt="${g.name}" width="600" height="900" loading="lazy"
+               class="w-full h-auto" />
+        </a>
+      `
+        )
+        .join("");
+    } catch {
+      container.innerHTML = `<p class="text-cream-dark col-span-full text-sm">Could not load games.</p>`;
+    }
+  }
+
+  const el = document.getElementById("gaming")!;
+  new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); loadSteamGames(); } }, { rootMargin: "200px" }).observe(el);
+</script>

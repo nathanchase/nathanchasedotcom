@@ -1,0 +1,89 @@
+---
+---
+
+<div id="bluesky">
+  <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-6 flex items-center gap-2">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.596 6.449.78 2.871 3.274 3.707 5.528 3.453-3.258.464-6.125 2.107-3.345 7.33C5.202 25.216 10.063 21.32 12 17.56c1.937 3.76 6.786 7.631 9.22 3.44 2.781-5.223-.086-6.866-3.344-7.33 2.254.254 4.747-.582 5.528-3.453.218-.8.596-5.76.596-6.449 0-.688-.139-1.86-.902-2.203-.659-.3-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>
+    Bluesky
+  </h3>
+  <div id="bluesky-feed" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="text-sm text-muted animate-pulse">Loading posts...</div>
+  </div>
+</div>
+
+<script>
+  const BSKY_ACTOR = "nathanchase.com";
+
+  function timeAgo(dateStr: string): string {
+    const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+    if (seconds < 60) return "just now";
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    const days = Math.floor(seconds / 86400);
+    if (days < 30) return `${days}d ago`;
+    return `${Math.floor(days / 30)}mo ago`;
+  }
+
+  function escapeHtml(str: string): string {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  const chevron = `<svg class="w-3 h-3 text-muted/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>`;
+
+  function postCard(text: string, date: string, url: string, image?: string): string {
+    return `<a href="${url}" target="_blank" rel="noopener" class="flex flex-col justify-between border border-muted/20 rounded-lg overflow-hidden hover:border-amber/30 hover:bg-warm-bg-light/30 transition-colors">
+      ${image ? `<img src="${image}" alt="" width="600" height="315" loading="lazy" class="w-full h-32 object-cover" />` : ""}
+      <div class="flex flex-col justify-between flex-1 p-3">
+        <p class="text-xs text-cream-dark leading-relaxed ${image ? "line-clamp-3" : "line-clamp-[8]"}">${escapeHtml(text)}</p>
+        <div class="flex items-center justify-between mt-2">
+          <span class="text-[10px] text-muted">${timeAgo(date)}</span>
+          ${chevron}
+        </div>
+      </div>
+    </a>`;
+  }
+
+  async function loadBluesky() {
+    const container = document.getElementById("bluesky-feed")!;
+    try {
+      const res = await fetch(
+        `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${BSKY_ACTOR}&limit=4&filter=posts_no_replies`
+      );
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      const posts = data.feed ?? [];
+      if (posts.length === 0) {
+        container.innerHTML = `<p class="text-sm text-muted">No recent posts.</p>`;
+        return;
+      }
+      container.innerHTML = posts
+        .slice(0, 4)
+        .map((item: any) => {
+          const post = item.post;
+          const text = post.record?.text ?? "";
+          const date = post.record?.createdAt ?? post.indexedAt;
+          const uri = post.uri;
+          const parts = uri.split("/");
+          const rkey = parts[parts.length - 1];
+          const handle = post.author?.handle ?? BSKY_ACTOR;
+          const url = `https://bsky.app/profile/${handle}/post/${rkey}`;
+          const embed = post.embed;
+          let image: string | undefined;
+          if (embed?.images?.[0]?.thumb) {
+            image = embed.images[0].thumb;
+          } else if (embed?.external?.thumb) {
+            image = embed.external.thumb;
+          }
+          return postCard(text, date, url, image);
+        })
+        .join("");
+    } catch {
+      container.innerHTML = `<p class="text-sm text-muted">Could not load Bluesky posts.</p>`;
+    }
+  }
+
+  const el = document.getElementById("bluesky")!;
+  new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); loadBluesky(); } }, { rootMargin: "200px" }).observe(el);
+</script>

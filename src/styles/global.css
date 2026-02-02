@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #f5e6c8;
+  --color-cream-dark: #d4c4a0;
+  --color-warm-bg: #1a1612;
+  --color-warm-bg-light: #2a2420;
+  --color-amber: #d4a054;
+  --color-amber-light: #e8c080;
+  --color-faded-red: #c45c4a;
+  --color-muted: #8a7e6e;
+
+  --font-display: "Ephesis", cursive;
+  --font-serif: "Gloock", serif;
+  --font-sans: "Sen", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+[id] {
+  scroll-margin-top: 10dvh;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-warm-bg);
+  color: var(--color-cream);
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Grain overlay */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* CRT glow for headings */
+.glow {
+  text-shadow: 0 0 10px rgba(212, 160, 84, 0.3), 0 0 40px rgba(212, 160, 84, 0.1);
+}
+
+/* Section textures */
+.texture {
+  position: relative;
+}
+
+.texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  opacity: 0.06;
+  z-index: 0;
+}
+
+.texture > * {
+  position: relative;
+  z-index: 1;
+}
+
+.texture-linen::before {
+  background-image: url("/textures/black-linen.avif");
+}
+
+.texture-leather::before {
+  background-image: url("/textures/dark-leather.avif");
+}
+
+.texture-paper::before {
+  background-image: url("/textures/handmade-paper.avif");
+  opacity: 0.08;
+}
+
+.texture-concrete::before {
+  background-image: url("/textures/concrete-wall.avif");
+}
+
+.texture-grunge::before {
+  background-image: url("/textures/subtle-grunge.avif");
+  opacity: 0.05;
+}
+
+.texture-cardboard::before {
+  background-image: url("/textures/cardboard.avif");
+  opacity: 0.04;
+}
+
+.texture-oldwall::before {
+  background-image: url("/textures/old-wall.avif");
+  opacity: 0.07;
+}
+
+.texture-wallpaper::before {
+  background-image: url("/textures/soft-wallpaper.avif");
+  opacity: 0.04;
+}
+
+/* Desaturate Experiencing artwork */
+#experiencing img {
+  filter: saturate(0.85);
+}
+
+/* Section divider */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-muted), transparent);
+  opacity: 0.3;
+}

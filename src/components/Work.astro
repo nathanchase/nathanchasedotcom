@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import o3Logo from "../assets/o3-logo.png";
+---
+
+<section id="work" class="max-w-3xl mx-auto px-6 py-24">
+  <h2 class="font-serif text-3xl text-amber glow mb-8">Work</h2>
+  <div class="space-y-6 text-cream-dark leading-relaxed">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-6 texture texture-paper border border-muted/15 p-6">
+      <div class="sm:w-48 shrink-0 flex items-center justify-center">
+        <Image src={o3Logo} alt="O3" width={500} densities={[1, 2]} format="avif" class="w-32 h-auto" />
+      </div>
+      <p>Currently consulting with O3 — building enterprise software for the healthcare industry. Vue and Nuxt specialist.</p>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-6 texture texture-cardboard border border-muted/15 p-6">
+      <div class="sm:w-48 shrink-0 flex items-center justify-center">
+        <img src="/logos/flickchart.svg" alt="Flickchart" width="579" height="79" class="h-8 w-auto" />
+      </div>
+      <p>Co-founder and designer. A movie ranking and discovery platform that lets users rank films head-to-head to build their personal chart.</p>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-2">Skills &amp; Expertise</h3>
+      <div class="flex flex-wrap gap-2 mt-4">
+        {[
+          "Frontend Development",
+          "Vue.js / Nuxt",
+          "UI / UX Design",
+          "Graphic Design",
+          "Brand Marketing",
+          "Copywriting",
+          "SEO",
+          "Social Media Marketing",
+          "Video Editing & Production",
+          "Motion Graphics",
+          "Multimedia Production",
+          "Sound Editing & Design",
+        ].map((skill) => (
+          <span class="text-xs uppercase tracking-wider text-cream-dark border border-muted/30 rounded-full px-3 py-1">{skill}</span>
+        ))}
+      </div>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-2">Notable Clients</h3>
+      <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-4">
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="Disney">
+          <img src="/logos/disney.svg" alt="Disney" width="700" height="294" class="h-8 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="Kaiser Permanente">
+          <img src="/logos/kaiser.svg" alt="Kaiser Permanente" width="486" height="55" class="h-6 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="Publix">
+          <img src="/logos/publix.svg" alt="Publix" width="537" height="121" class="h-6 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="AAA">
+          <img src="/logos/aaa.svg" alt="AAA" width="501" height="317" class="h-10 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="UPS">
+          <img src="/logos/ups.svg" alt="UPS" width="52" height="62" class="h-10 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="Geico">
+          <img src="/logos/geico.svg" alt="Geico" width="200" height="50" class="h-7 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="PBS">
+          <img src="/logos/pbs.svg" alt="PBS" width="135" height="56" class="h-10 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="Travelers">
+          <img src="/logos/travelers.svg" alt="Travelers" width="250" height="58" class="h-8 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="Nationwide">
+          <img src="/logos/nationwide.svg" alt="Nationwide" width="250" height="64" class="h-6 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="University of South Florida">
+          <img src="/logos/usf.svg" alt="University of South Florida" width="190" height="31" class="h-6 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+        <div class="flex items-center justify-center border border-muted/20 rounded-lg p-4 h-20 bg-warm-bg-light/30" title="21st Century Insurance">
+          <img src="/logos/21st-century.svg" alt="21st Century Insurance" width="500" height="178" class="h-8 w-auto opacity-70 saturate-[0] sepia" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,55 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Work from "../components/Work.astro";
+import Music from "../components/Music.astro";
+import Watching from "../components/Watching.astro";
+import Gaming from "../components/Gaming.astro";
+import Listening from "../components/Listening.astro";
+import Bluesky from "../components/Bluesky.astro";
+import GitHub from "../components/GitHub.astro";
+import Links from "../components/Links.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout>
+  <Nav />
+  <main>
+    <div class="texture texture-grunge"><Hero /></div>
+    <hr class="divider" />
+    <div class="texture texture-paper"><About /></div>
+    <hr class="divider" />
+    <div class="texture texture-leather"><Work /></div>
+    <hr class="divider" />
+    <div class="texture texture-linen"><Music /></div>
+    <hr class="divider" />
+    <div class="texture texture-cardboard">
+      <section id="experiencing" class="max-w-7xl mx-auto px-6 py-24">
+        <h2 class="font-serif text-3xl text-amber glow mb-10">Experiencing</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <Watching />
+          <Gaming />
+        </div>
+        <div class="mt-10">
+          <Listening />
+        </div>
+      </section>
+    </div>
+    <hr class="divider" />
+    <div class="texture texture-concrete">
+      <section id="activity" class="max-w-7xl mx-auto px-6 py-24">
+        <h2 class="font-serif text-3xl text-amber glow mb-10">Activity</h2>
+        <div class="space-y-10">
+          <Bluesky />
+          <GitHub />
+        </div>
+      </section>
+    </div>
+    <hr class="divider" />
+    <div class="texture texture-wallpaper"><Links /></div>
+    <hr class="divider" />
+  </main>
+  <Footer />
+</Layout>
