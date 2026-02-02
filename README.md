@@ -2,7 +2,7 @@
 
 Personal homepage for Nathan Chase — designer, developer, and drummer based in Central Florida.
 
-**Live site:** [nathanchase.com](https://nathanchase.com)
+**Live site:** [https://www.nathanchase.com](https://www.nathanchase.com)
 
 ## Tech Stack
 
