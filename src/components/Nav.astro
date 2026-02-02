@@ -1,7 +1,24 @@
 <nav class="fixed top-0 left-0 right-0 z-50 bg-warm-bg/80 backdrop-blur-sm border-b border-muted/10">
   <div class="max-w-3xl mx-auto px-6 py-3 flex justify-between items-center">
     <a href="#" class="font-display text-amber text-2xl">NC</a>
-    <div class="flex gap-6 text-sm text-cream-dark">
+    <!-- Desktop links -->
+    <div class="hidden md:flex gap-6 text-sm text-cream-dark">
+      <a href="#about" class="hover:text-amber transition-colors">About</a>
+      <a href="#work" class="hover:text-amber transition-colors">Work</a>
+      <a href="#music" class="hover:text-amber transition-colors">Music</a>
+      <a href="#experiencing" class="hover:text-amber transition-colors">Experiencing</a>
+      <a href="#activity" class="hover:text-amber transition-colors">Activity</a>
+      <a href="#links" class="hover:text-amber transition-colors">Links</a>
+    </div>
+    <!-- Hamburger button -->
+    <button id="menu-toggle" class="md:hidden text-cream-dark hover:text-amber transition-colors" aria-label="Toggle menu" aria-expanded="false">
+      <svg id="icon-open" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+      <svg id="icon-close" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6" /></svg>
+    </button>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-muted/10 bg-warm-bg/95 backdrop-blur-sm">
+    <div class="max-w-3xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm text-cream-dark">
       <a href="#about" class="hover:text-amber transition-colors">About</a>
       <a href="#work" class="hover:text-amber transition-colors">Work</a>
       <a href="#music" class="hover:text-amber transition-colors">Music</a>
@@ -11,3 +28,27 @@
     </div>
   </div>
 </nav>
+
+<script>
+  const toggle = document.getElementById("menu-toggle")!;
+  const menu = document.getElementById("mobile-menu")!;
+  const iconOpen = document.getElementById("icon-open")!;
+  const iconClose = document.getElementById("icon-close")!;
+
+  toggle.addEventListener("click", () => {
+    const open = menu.classList.toggle("hidden");
+    iconOpen.classList.toggle("hidden");
+    iconClose.classList.toggle("hidden");
+    toggle.setAttribute("aria-expanded", String(!open));
+  });
+
+  // Close menu when a link is tapped
+  menu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      menu.classList.add("hidden");
+      iconOpen.classList.remove("hidden");
+      iconClose.classList.add("hidden");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+  });
+</script>

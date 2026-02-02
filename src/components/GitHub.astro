@@ -80,7 +80,7 @@
     }
 
     return `<a href="${repoUrl}" target="_blank" rel="noopener" class="flex flex-col justify-between min-h-[120px] border border-muted/20 rounded-lg p-4 hover:border-amber/30 hover:bg-warm-bg-light/30 transition-colors">
-      <p class="text-sm text-cream-dark leading-relaxed">${action} <span class="text-amber">${escapeHtml(repo)}</span></p>
+      <p class="text-sm text-cream-dark leading-relaxed">${action} <span class="text-amber break-all">${escapeHtml(repo)}</span></p>
       <div class="flex items-center justify-between mt-2">
         <span class="text-xs text-muted">${timeAgo(event.created_at)}</span>
         ${chevron}
