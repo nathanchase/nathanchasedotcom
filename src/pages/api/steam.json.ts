@@ -49,7 +49,7 @@ export const GET: APIRoute = async ({ locals }) => {
     return new Response(JSON.stringify({ games: recent }), {
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=3600",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
       },
     });
   } catch (err) {

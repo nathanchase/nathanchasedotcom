@@ -4,7 +4,15 @@
 <div id="listening">
   <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-6">Listening</h3>
   <div id="lastfm-tracks" class="grid grid-cols-4 sm:grid-cols-8 gap-3">
-    <p class="text-cream-dark col-span-full text-sm">Loading recently played…</p>
+    {Array.from({ length: 8 }).map(() => (
+      <div class="rounded border border-muted/20 bg-warm-bg-light/30 animate-pulse">
+        <div class="w-full aspect-square bg-warm-bg-light/50 rounded" />
+        <div class="p-2 space-y-1.5">
+          <div class="h-3 bg-warm-bg-light/50 rounded w-3/4" />
+          <div class="h-2.5 bg-warm-bg-light/50 rounded w-1/2" />
+        </div>
+      </div>
+    ))}
   </div>
 </div>
 

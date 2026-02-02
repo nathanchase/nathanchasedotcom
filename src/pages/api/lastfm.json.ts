@@ -47,7 +47,7 @@ export const GET: APIRoute = async ({ locals }) => {
     return new Response(JSON.stringify({ tracks: recent }), {
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=300",
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
       },
     });
   } catch {
