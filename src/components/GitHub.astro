@@ -48,8 +48,8 @@
 
     switch (event.type) {
       case "PushEvent":
-        const count = event.payload?.commits?.length ?? 0;
-        action = `Pushed ${count} commit${count !== 1 ? "s" : ""} to`;
+        const count = event._totalCommits ?? event.payload?.commits?.length ?? 0;
+        action = count > 0 ? `Pushed ${count} commit${count !== 1 ? "s" : ""} to` : "Pushed to";
         break;
       case "CreateEvent":
         action = `Created ${event.payload?.ref_type ?? "repository"}${event.payload?.ref ? " " + event.payload.ref + " in" : ""}`;
@@ -100,11 +100,33 @@
         container.innerHTML = `<p class="text-sm text-muted">No recent activity.</p>`;
         return;
       }
+      // Aggregate push commits per repo and pick the best event per repo
+      const repoCommits = new Map<string, number>();
+      for (const event of events) {
+        if (event.type === "PushEvent") {
+          const count = event.payload?.commits?.length ?? 0;
+          repoCommits.set(event.repo.name, (repoCommits.get(event.repo.name) ?? 0) + count);
+        }
+      }
+
       const seen = new Set<string>();
       const unique: any[] = [];
       for (const event of events) {
         if (!seen.has(event.repo.name)) {
           seen.add(event.repo.name);
+          // For repos with push activity, prefer showing aggregated push count
+          if (repoCommits.has(event.repo.name) && event.type !== "PushEvent") {
+            // Find the first push event for this repo instead
+            const pushEvent = events.find((e: any) => e.type === "PushEvent" && e.repo.name === event.repo.name);
+            if (pushEvent) {
+              pushEvent._totalCommits = repoCommits.get(event.repo.name);
+              unique.push(pushEvent);
+              continue;
+            }
+          }
+          if (event.type === "PushEvent") {
+            event._totalCommits = repoCommits.get(event.repo.name);
+          }
           unique.push(event);
         }
         if (unique.length >= 6) break;
