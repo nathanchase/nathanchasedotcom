@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from "astro";
 
-const PLEX_SERVER = import.meta.env.PLEX_SERVER_URL;
+let PLEX_SERVER = "";
 const TMDB_IMG = "https://image.tmdb.org/t/p/w300";
 const ACCOUNT_ID = 1; // Zampa01
 
@@ -74,6 +74,7 @@ export const GET: APIRoute = async ({ locals }) => {
   const env = runtime.runtime?.env ?? {};
   const token = env.PLEX_TOKEN ?? import.meta.env.PLEX_TOKEN;
   const tmdbKey = env.TMDB_API_KEY ?? import.meta.env.TMDB_API_KEY;
+  PLEX_SERVER = env.PLEX_SERVER_URL ?? import.meta.env.PLEX_SERVER_URL;
 
   if (!token) {
     return new Response(JSON.stringify({ error: "Missing Plex token" }), {
