@@ -9,7 +9,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "purge:plex": "curl -X POST \"https://api.cloudflare.com/client/v4/zones/f37af16dd2dba83f58e3e2538c147bd8/purge_cache\" -H \"Authorization: Bearer $CF_API_TOKEN\" -H \"Content-Type: application/json\" -d '{\"files\":[\"https://www.nathanchase.com/api/plex.json\"]}'",
+    "purge:steam": "curl -X POST \"https://api.cloudflare.com/client/v4/zones/f37af16dd2dba83f58e3e2538c147bd8/purge_cache\" -H \"Authorization: Bearer $CF_API_TOKEN\" -H \"Content-Type: application/json\" -d '{\"files\":[\"https://www.nathanchase.com/api/steam.json\"]}'",
+    "purge:lastfm": "curl -X POST \"https://api.cloudflare.com/client/v4/zones/f37af16dd2dba83f58e3e2538c147bd8/purge_cache\" -H \"Authorization: Bearer $CF_API_TOKEN\" -H \"Content-Type: application/json\" -d '{\"files\":[\"https://www.nathanchase.com/api/lastfm.json\"]}'",
+    "purge:all": "curl -X POST \"https://api.cloudflare.com/client/v4/zones/f37af16dd2dba83f58e3e2538c147bd8/purge_cache\" -H \"Authorization: Bearer $CF_API_TOKEN\" -H \"Content-Type: application/json\" -d '{\"files\":[\"https://www.nathanchase.com/api/plex.json\",\"https://www.nathanchase.com/api/steam.json\",\"https://www.nathanchase.com/api/lastfm.json\"]}'"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
