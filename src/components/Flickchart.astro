@@ -3,29 +3,35 @@
 
 <div id="flickchart">
   <h3 class="text-sm font-bold uppercase tracking-widest text-cream mb-6">Ranking</h3>
+
+  <!-- Load script once -->
+  <script is:inline src="https://v2.flickchart.com/widget-assets/embed.js?v=0.0.1" async></script>
+
   <div id="flickchart-widgets" class="space-y-6">
-    <div>
-      <script is:inline src="https://v2.flickchart.com/widget-assets/embed.js"
+    <flickchart-widget
       data-widget="rankings"
       data-username="zampa"
-      data-limit="10"
+      data-limit="8"
       data-show-titles="false"
       data-show-dates="false"
-      data-show-title="false"
-      data-show-branding="false"
-      async></script>
-    </div>
-    <div>
-      <script is:inline src="https://v2.flickchart.com/widget-assets/embed.js"
+      data-show-background="false">
+    </flickchart-widget>
+
+    <flickchart-widget
       data-widget="watchlist"
       data-username="zampa"
-      async></script>
-    </div>
-    <div>
-      <script is:inline src="https://v2.flickchart.com/widget-assets/embed.js"
+      data-limit="8"
+      data-show-titles="false"
+      data-show-dates="false"
+      data-show-background="false">
+    </flickchart-widget>
+
+    <flickchart-widget
       data-widget="reviews"
       data-username="zampa"
-      async></script>
-    </div>
+      data-show-titles="false"
+      data-show-dates="false"
+      data-show-background="false">
+    </flickchart-widget>
   </div>
 </div>
