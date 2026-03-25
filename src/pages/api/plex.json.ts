@@ -20,30 +20,35 @@ interface PlexHistoryItem {
   originallyAvailableAt?: string;
 }
 
-/** Try to get a Plex thumb path from the library */
-async function fetchPlexThumb(token: string, item: PlexHistoryItem): Promise<string | null> {
+/** Get the Plex thumb path (without token) for proxying */
+function getPlexThumbPath(item: PlexHistoryItem): string | null {
   const existing = item.type === "episode"
     ? item.grandparentThumb ?? item.parentThumb ?? item.thumb
     : item.thumb;
-  if (existing) return `${PLEX_SERVER}/photo/:/transcode?width=300&height=450&minSize=1&upscale=1&url=${encodeURIComponent(existing)}&X-Plex-Token=${token}`;
+  return existing ?? null;
+}
 
-  if (item.key) {
-    try {
-      const res = await fetch(`${PLEX_SERVER}${item.key}?X-Plex-Token=${token}`, {
-        headers: { Accept: "application/json" },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const meta = data.MediaContainer?.Metadata?.[0];
-        const thumb = item.type === "episode"
-          ? meta?.grandparentThumb ?? meta?.parentThumb ?? meta?.thumb
-          : meta?.thumb;
-        if (thumb) return `${PLEX_SERVER}/photo/:/transcode?width=300&height=450&minSize=1&upscale=1&url=${encodeURIComponent(thumb)}&X-Plex-Token=${token}`;
-      }
-    } catch {}
-  }
-
+/** Fetch a Plex thumb via the library metadata endpoint */
+async function fetchPlexThumbFromKey(token: string, item: PlexHistoryItem): Promise<string | null> {
+  if (!item.key) return null;
+  try {
+    const res = await fetch(`${PLEX_SERVER}${item.key}?X-Plex-Token=${token}`, {
+      headers: { Accept: "application/json" },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const meta = data.MediaContainer?.Metadata?.[0];
+      return item.type === "episode"
+        ? meta?.grandparentThumb ?? meta?.parentThumb ?? meta?.thumb
+        : meta?.thumb;
+    }
+  } catch {}
   return null;
+}
+
+/** Build a proxied Plex thumb URL that hides the token */
+function buildProxiedThumbUrl(plexThumbPath: string): string {
+  return `/api/plex-thumb.json?path=${encodeURIComponent(plexThumbPath)}`;
 }
 
 /** Fall back to TMDB for poster art */
@@ -83,6 +88,13 @@ export const GET: APIRoute = async ({ locals }) => {
     });
   }
 
+  if (!PLEX_SERVER) {
+    return new Response(JSON.stringify({ error: "Missing Plex server URL" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const url = `${PLEX_SERVER}/status/sessions/history/all?X-Plex-Token=${token}&sort=viewedAt:desc&accountID=${ACCOUNT_ID}&limit=20`;
     const res = await fetch(url, { headers: { Accept: "application/json" } });
@@ -104,15 +116,21 @@ export const GET: APIRoute = async ({ locals }) => {
 
     const top = deduped.slice(0, 8);
 
-    // Fetch thumbs: try Plex first, then TMDB
+    // Fetch thumbs: try TMDB first (public CDN), fall back to proxied Plex thumb
     const recent = await Promise.all(
       top.map(async (item) => {
         const displayTitle = item.type === "episode" ? item.grandparentTitle ?? item.title : item.title;
 
-        let thumb = await fetchPlexThumb(token, item);
-        if (!thumb && tmdbKey) {
+        let thumb: string | null = null;
+
+        if (tmdbKey) {
           const year = item.originallyAvailableAt?.split("-")[0];
           thumb = await fetchTmdbPoster(tmdbKey, displayTitle, item.type, year);
+        }
+
+        if (!thumb) {
+          const plexPath = getPlexThumbPath(item) ?? await fetchPlexThumbFromKey(token, item);
+          if (plexPath) thumb = buildProxiedThumbUrl(plexPath);
         }
 
         return {
@@ -134,7 +152,8 @@ export const GET: APIRoute = async ({ locals }) => {
       },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: "Failed to fetch Plex history" }), {
+    const message = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify({ error: "Failed to fetch Plex history", detail: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
