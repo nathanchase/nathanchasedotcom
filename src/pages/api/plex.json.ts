@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
 let PLEX_SERVER = "";
 const TMDB_IMG = "https://image.tmdb.org/t/p/w300";
@@ -74,9 +75,7 @@ async function fetchTmdbPoster(tmdbKey: string, title: string, type: "movie" | "
   }
 }
 
-export const GET: APIRoute = async ({ locals }) => {
-  const runtime = locals as { runtime?: { env?: Record<string, string> } };
-  const env = runtime.runtime?.env ?? {};
+export const GET: APIRoute = async () => {
   const token = env.PLEX_TOKEN ?? import.meta.env.PLEX_TOKEN;
   const tmdbKey = env.TMDB_API_KEY ?? import.meta.env.TMDB_API_KEY;
   PLEX_SERVER = env.PLEX_SERVER_URL ?? import.meta.env.PLEX_SERVER_URL;

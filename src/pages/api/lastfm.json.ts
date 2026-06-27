@@ -1,12 +1,11 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
 const LASTFM_USER = "Zampa";
 
-export const GET: APIRoute = async ({ locals }) => {
-  const runtime = locals as { runtime?: { env?: Record<string, string> } };
-  const env = runtime.runtime?.env ?? {};
+export const GET: APIRoute = async () => {
   const apiKey = env.LASTFM_API_KEY ?? import.meta.env.LASTFM_API_KEY;
 
   if (!apiKey) {

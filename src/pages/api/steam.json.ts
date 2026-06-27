@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
 interface SteamGame {
   appid: number;
@@ -10,9 +11,8 @@ interface SteamGame {
   rtime_last_played: number;
 }
 
-export const GET: APIRoute = async ({ locals }) => {
-  const runtime = locals as { runtime?: { env?: { STEAM_API_KEY?: string } } };
-  const apiKey = runtime.runtime?.env?.STEAM_API_KEY ?? import.meta.env.STEAM_API_KEY;
+export const GET: APIRoute = async () => {
+  const apiKey = env.STEAM_API_KEY ?? import.meta.env.STEAM_API_KEY;
   const steamId = "76561197970320688";
 
   if (!apiKey) {

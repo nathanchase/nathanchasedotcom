@@ -1,10 +1,9 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
-export const GET: APIRoute = async ({ url, locals }) => {
-  const runtime = locals as { runtime?: { env?: Record<string, string> } };
-  const env = runtime.runtime?.env ?? {};
+export const GET: APIRoute = async ({ url }) => {
   const token = env.PLEX_TOKEN ?? import.meta.env.PLEX_TOKEN;
   const server = env.PLEX_SERVER_URL ?? import.meta.env.PLEX_SERVER_URL;
 
