@@ -6,7 +6,7 @@ Personal homepage for Nathan Chase — designer, developer, drummer, and dad bas
 
 ## Tech Stack
 
-- [Astro 6](https://astro.build) (Beta)
+- [Astro 7](https://astro.build)
 - [Tailwind CSS v4](https://tailwindcss.com)
 - Deployed on [Cloudflare Workers](https://workers.cloudflare.com)
 - Server-side API routes for Steam, Plex, Last.fm, and TMDB
